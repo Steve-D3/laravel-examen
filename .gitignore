@@ -1,5 +1,7 @@
 *.log
 .DS_Store
+.gitignore
+.gitattributes
 .env
 .env.backup
 .env.production
