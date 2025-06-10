@@ -20,6 +20,12 @@ class Booking extends Model
         'status',
     ];
 
+    protected $hidden = [
+        'trip_id',
+        'created_at',
+        'updated_at',
+    ];
+
     /**
      * The attributes that should be cast.
      *

@@ -19,6 +19,7 @@
                         <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pending</th>
                         <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cancelled</th>
                         <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
+                        <th class="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -50,6 +51,26 @@
                                     ${{ number_format($trip->total_revenue, 2) }}
                                 </span>
                             </td>
+                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex space-x-2 justify-end">
+                                    <a href="{{ route('admin.trips.show', $trip) }}" class="text-blue-600 hover:text-blue-900" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ route('admin.trips.edit', $trip) }}" class="text-indigo-600 hover:text-indigo-900" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{{ route('admin.bookings.index', ['trip_id' => $trip->id]) }}" class="text-purple-600 hover:text-purple-900" title="View Bookings">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </a>
+                                    <form action="{{ route('admin.trips.destroy', $trip) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this trip? This action cannot be undone.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-900" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -79,6 +100,24 @@
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                             ${{ number_format($trip->total_revenue, 2) }}
                         </span>
+                    </div>
+                    <div class="mt-3 flex space-x-3">
+                        <a href="{{ route('admin.trips.show', $trip) }}" class="text-blue-600 hover:text-blue-900" title="View">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ route('admin.trips.edit', $trip) }}" class="text-indigo-600 hover:text-indigo-900" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{{ route('admin.bookings.index', ['trip_id' => $trip->id]) }}" class="text-purple-600 hover:text-purple-900" title="View Bookings">
+                            <i class="fas fa-calendar-check"></i>
+                        </a>
+                        <form action="{{ route('admin.trips.destroy', $trip) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this trip? This action cannot be undone.');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-600 hover:text-red-900" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
                     </div>
                     <div class="mt-3 flex justify-between text-xs">
                         <span class="inline-flex items-center text-green-600">

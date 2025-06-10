@@ -20,6 +20,12 @@ class Trip extends Model
         'price_per_person',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'total_revenue'
+    ];
+
     /**
      * The attributes that should be cast.
      *
@@ -36,7 +42,7 @@ class Trip extends Model
      *
      * @var array
      */
-    protected $appends = ['total_revenue'];
+    protected $appends = ['total_revenue', 'end_date'];
 
     /**
      * Get the bookings for the trip.
@@ -59,15 +65,30 @@ class Trip extends Model
     }
 
     /**
-     * Get the total revenue from confirmed bookings.
+     * Get the total revenue from confirmed bookings for this trip.
+     *
+     * @return float
      */
-    public function getTotalRevenueAttribute(): float
+    public function getTotalRevenueAttribute()
     {
-        $confirmedBookings = $this->bookings()
+        $totalPeople = $this->bookings()
             ->where('status', 'confirmed')
             ->sum('number_of_people');
+            
+        return $this->price_per_person * $totalPeople;
+    }
 
-        return $this->price_per_person * $confirmedBookings;
+    /**
+     * Get the calculated end date based on start date and duration.
+     *
+     * @return string|null
+     */
+    public function getEndDateAttribute()
+    {
+        if (!$this->start_date || !$this->duration_days) {
+            return null;
+        }
+        return $this->start_date->copy()->addDays($this->duration_days - 1);
     }
 
     /**
@@ -76,6 +97,6 @@ class Trip extends Model
     public function scopeUpcoming($query)
     {
         return $query->where('start_date', '>=', now()->toDateString())
-                    ->orderBy('start_date');
+            ->orderBy('start_date');
     }
 }
